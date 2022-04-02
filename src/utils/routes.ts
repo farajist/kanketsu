@@ -1,7 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 
-function asyncRoute(fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) {
-  return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export function asyncRoute(
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
+) {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
     try {
       await fn(req, res, next);
     } catch (error) {
@@ -10,4 +16,15 @@ function asyncRoute(fn: (req: Request, res: Response, next: NextFunction) => Pro
   };
 }
 
-export default asyncRoute;
+export class ErrorWithStatus extends Error {
+  constructor(message: string, public status: number) {
+    super(message);
+  }
+}
+
+export function errWithStatus(
+  message: string,
+  status: number
+): ErrorWithStatus {
+  return new ErrorWithStatus(message, status);
+}

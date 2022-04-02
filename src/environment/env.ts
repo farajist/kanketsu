@@ -4,13 +4,24 @@ import { config } from 'dotenv';
 config();
 
 interface Env {
-    cors: boolean;
-    port: string;
+  cors: boolean;
+  port: string;
+
+  redisHost: string;
+  redisPassword: string;
+  redisPort: number;
+  redisDb: number;
 }
 // default env vars, should be non-sensitive
 const env: Env = {
   cors: process.env.CORS === 'true' || false,
   port: process.env.PORT || '4000',
+
+  // redis
+  redisHost: process.env.REDIS_HOST || '',
+  redisPassword: process.env.REDIS_PASSWORD || '',
+  redisPort: parseInt(process.env.REDIS_PORT || '6379'),
+  redisDb: parseInt(process.env.REDIS_DB || '0'),
 };
 
 const requiredVars: (keyof Env)[] = [];

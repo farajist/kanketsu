@@ -1,17 +1,14 @@
 import { Request, Response, Router } from 'express';
-import asyncRoute from '../../utils/routes';
-
-export interface IsAliveResp {
-    isAlive: boolean;
-}
+import { asyncRoute } from '../../../utils/routes';
+import { IsAliveResp } from '../dtos/isalive-response.dto';
 
 async function isAlive(req: Request, res: Response) {
   // fake it
-  const resBody : IsAliveResp = await Promise.resolve({ isAlive: true });
+  const resBody: IsAliveResp = await Promise.resolve({ isAlive: true });
   res.json(resBody);
 }
 
-export function isAliveRouter(): Router {
+export default function isAliveRouter(): Router {
   const router = Router();
   router.get('/', asyncRoute(isAlive));
   router.post('/', asyncRoute(isAlive));
