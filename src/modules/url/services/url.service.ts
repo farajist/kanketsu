@@ -1,55 +1,50 @@
-import { Redis } from 'ioredis';
-import UrlMapper from '../mappers/url.mapper';
+import UrlMapper from '../url.mapper';
 import { randomIntBetween } from '../../../utils/random';
-import { encode } from '../../../lib/base58';
-import { UrlDTO } from '../dtos/url.dto';
-import Url from '../domain/url.domain';
+import { encode } from '../../../lib/base62';
+import { UrlDTO } from '../interfaces/url.dto';
+import Url from '../url.model';
+import cache from '@common/cache';
+import { UrlSaveOptions } from '../interfaces/url-save-options';
 
 // const DEFAULT_URL_LIFE_TIME_KEY = 'url_lifetime'; // TODO: find a better name
 
-interface UrlSaveOptions {
-  overwrite?: boolean;
+interface IUrlService {
+  uniqId: () => Promise<string>;
+  findUrl: (longUrl: string) => Promise<string | null>;
+  findHash: (shortUrl: string) => Promise<Record<string, string>>
+  click: (shortUrl: string) => Promise<void>
+  set: (url: UrlDTO, options?: UrlSaveOptions) => Promise<{url: string, hash: string}>
+  get: (hash: string) => Promise<Url>
 }
 
-class UrlService {
-  private db: Redis;
-
-  constructor(db: Redis) {
-    this.db = db;
-  }
-
-  async uniqId() {
-    const count = await this.db.incr('counter');
+const urlService: IUrlService = {
+  uniqId: async function (): Promise<string> {
+    const count = await cache.incr('counter');
     return encode(randomIntBetween(9999, 999999) + count);
-  }
-
-  async findUrl(longUrl: string) {
-    return this.db.get(longUrl);
-  }
-
-  findHash(shortUrl: string) {
-    return this.db.hgetall(shortUrl);
-  }
-
-  async click(shortUrl: string) {
-    this.db.hincrby(shortUrl, 'clicks', 1);
-  }
-
-  async set(data: UrlDTO, options: UrlSaveOptions = { overwrite: false }) {
+  },
+  findUrl: async function (longUrl: string): Promise<string | null> {
+    return cache.get(longUrl);
+  },
+  findHash: async function (shortUrl: string): Promise<Record<string, string>> {
+    return cache.hgetall(shortUrl);
+  },
+  click: async function (shortUrl: string): Promise<void> {
+    await cache.hincrby(shortUrl, 'clicks', 1);
+  },
+  set: async function (data: UrlDTO, options: UrlSaveOptions = { overwrite: false }): Promise<{ url: string; hash: string; }> {
     const { url } = data;
     const { overwrite } = options;
-    const hash = await this.findUrl(url);
-    if (!overwrite && hash) return { hash, url };
+    const hash = await this.findUrl(data.url);
+    if (!overwrite && hash) return { hash, url: data.url };
 
     // FIXME: load and pass defaults
     const rawLongUrlData = UrlMapper.toRedisHash(data, {});
 
     const uid = await this.uniqId();
-    await this.db.multi().set(url, uid).hmset(uid, rawLongUrlData).exec();
+    await cache.multi().set(data.url, uid).hmset(uid, rawLongUrlData).exec();
     return { hash: uid, url };
-  }
-
-  async get(shortUrlHash: string): Promise<Url> {
+  },
+  get: async function (shortUrlHash: string): Promise<Url> {
     const payload = await this.findHash(shortUrlHash);
     if (Object.keys(payload).length === 0) {
       throw new Error('hash not found');
@@ -59,5 +54,4 @@ class UrlService {
   }
 }
 
-const urlService = new UrlService({});
 export default urlService;

@@ -1,5 +1,5 @@
-import { Application, Request, Response } from 'express';
-import { INTERNAL_SERVER_ERROR } from 'http-status-codes';
+import { Application, NextFunction, Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 export interface ErrorResponse {
   status: number;
@@ -9,13 +9,14 @@ export interface ErrorResponse {
 }
 
 export function initErrorRoutes(app: Application): void {
-  app.use((err: any, req: Request, res: Response) => {
+  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     let e = err;
     // axios response error
     if (e && e.response && e.response.data) {
       e = e.response.data;
     }
-    const status = (e && (e.status || e.statusCode)) || INTERNAL_SERVER_ERROR;
+    const status =
+      (e && (e.status || e.statusCode)) || StatusCodes.INTERNAL_SERVER_ERROR;
     const error =
       e && (e.message || (e.error && e.error.toString()) || e.toString());
     const code = e && e.code;
@@ -23,7 +24,7 @@ export function initErrorRoutes(app: Application): void {
       status,
       error,
       code,
-      name: e.name
+      name: e.name,
     };
     res.status(status).json(resBody);
   });

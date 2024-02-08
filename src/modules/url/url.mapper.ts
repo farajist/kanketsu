@@ -1,11 +1,11 @@
-import Url from '../domain/url.domain';
+import Url from './url.model';
 
 export default class UrlMapper {
   static toRedisHash(longUrl: Url, hashDefaults: Omit<Url, 'url'>): any {
     return {
       startDate: longUrl.startDate || hashDefaults.startDate,
       endDate: longUrl.endDate || hashDefaults.endDate,
-      ...longUrl
+      ...longUrl,
     };
   }
 
@@ -16,7 +16,7 @@ export default class UrlMapper {
       endDate: end_date,
       url,
       hash,
-      clicks
+      clicks,
     };
   }
 }

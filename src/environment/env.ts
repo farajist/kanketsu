@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 // load env vars from OS and .env file
 config();
 
-interface Env {
+export interface Env {
   cors: boolean;
   port: string;
 
@@ -32,4 +32,5 @@ if (missingVars.length) {
   throw new Error(`Missing environment variables: ${missingVars.join(', ')}`);
 }
 
+export const isJestEnv = () => process.env.JEST_WORKER_ID !== undefined;
 export default env;

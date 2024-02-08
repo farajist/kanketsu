@@ -1,9 +1,9 @@
 import RedisClient, { Cluster, Redis, RedisOptions } from 'ioredis';
-import env from '../../environment/env';
+import env, { Env } from '../../environment/env';
 
 export type CacheClient = Redis; // union other possible types
 
-export function redisEnvOptions(): RedisOptions {
+export function redisEnvOptions(env: Env): RedisOptions {
   const { redisHost, redisPort, redisDb, redisPassword } = env;
   return {
     host: redisHost,
@@ -12,23 +12,24 @@ export function redisEnvOptions(): RedisOptions {
     password: redisPassword,
   };
 }
+
 function createCacheClient(): CacheClient {
-  return new RedisClient(redisEnvOptions());
+  return new RedisClient(redisEnvOptions(env));
 }
 
-const cacheClient: CacheClient = createCacheClient();
+const cache = createCacheClient();
 
 export const createClient = (
   type: 'client' | 'subscriber' | 'bclient'
 ): Redis | Cluster => {
   switch (type) {
     case 'client':
-      return cacheClient;
+      return cache;
     case 'subscriber':
-      return cacheClient;
+      return cache;
     default:
-      return new RedisClient(redisEnvOptions());
+      return new RedisClient(redisEnvOptions(env));
   }
 };
 
-export default cacheClient;
+export default cache;

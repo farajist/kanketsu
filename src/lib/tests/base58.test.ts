@@ -1,4 +1,4 @@
-describe('lib.base58', () => {
+describe('lib.base62', () => {
   it('should', () => {
     expect(true).toBeTruthy();
   });

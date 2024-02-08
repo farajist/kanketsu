@@ -34,7 +34,7 @@ jest.doMock('@common/cache', () => {
 
 import urlService from './url.service';
 
-describe('url.service', () => {
+describe('url-fn.service', () => {
 
   it('should find stored url', async () => {
     const hash = await urlService.findUrl(
@@ -63,7 +63,7 @@ describe('url.service', () => {
       url: newLongUrl,
       startDate: new Date(),
       endDate: new Date(+new Date() + 86400000),
-    }, { overwrite: false });
+    });
 
     const newHash = await redis.get(newLongUrl);
     const hashMeta = await redis.hgetall(newHash);
