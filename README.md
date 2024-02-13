@@ -1,27 +1,31 @@
-## Express/TS Minimal REST-API Starter
+## Kanketsu
 
-Minimal REST API project starter using express and typescript
+Kanketsu (簡潔: concise; brief; succinct; ​), is a distributed short URL server designed for high availability 
 
-## Project Status
 
-> Permanent work in progress maybe ? 改善 you know ;)
+## Installation 
 
-## Installation and Setup Instructions
+1. Make sure that you have (Docker)[] installed
+2. Clone down this repository.
+```sh
+git clone https://github.com/farajist/kanketsu.git
+```
+3. Create environment file `.env` based on `.env.example`
+4. In the project workding directory, run the docker-compose command
+```sh
+docker-compose up --build
+```
+5. The URL shortner service is now ready to serve requests:
 
-Clone down this repository. You will need `node` and `yarn` installed globally on your machine.
+```sh
+curl --location 'localhost:4000/url/shorten' --header 'Content-Type: application/json' --data '{ "url": "http://www.example.com" }'
+```
 
-Installation:
+```sh
+curl --location 'localhost:4000/url/expand/3PKb'
+```
+## System design 
 
-`yarn`
+The system design as well as architectural decisions are detailed [here]("ARCHITECTURE.md").
 
-To Run Lint (eslint):
-
-`yarn lint`
-
-To Run Test Suite:
-
-`yarn test`
-
-To Start Server:
-
-`yarn start`
+## License
