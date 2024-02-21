@@ -1,0 +1,5 @@
+- write readme and initiate archi 
+- fix and test connection to db 
+- fix and test connection to zookeeper 
+- explain sequence 
+- test and run all in docker
