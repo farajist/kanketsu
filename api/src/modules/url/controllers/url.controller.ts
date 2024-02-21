@@ -2,7 +2,6 @@ import { Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { asyncRoute, errWithStatus } from '@utils/routes';
 import { ERROR_MISSING_REQUIRED_PARAMS } from '../constants';
-import urlCache from '../repos/url-cache';
 import { ExpandRequest } from '../models/requests/expand.request';
 import { ShortenRequest } from '../models/requests/shorten.request';
 import shortenSchema from '../models/validators/shorten-url.schema';

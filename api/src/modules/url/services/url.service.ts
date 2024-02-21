@@ -1,5 +1,5 @@
-import cache from '@common/cache/cache';
-import { tokenGenerator } from '@common/token/token';
+import cache from '@common/cache';
+import { tokenGenerator } from '@common/token';
 import { encode } from '@lib/base62';
 
 import { UrlDTO } from '../models/url.dto';

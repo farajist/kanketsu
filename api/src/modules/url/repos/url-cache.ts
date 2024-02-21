@@ -1,4 +1,4 @@
-import cache from '@common/cache/cache';
+import cache from '@common/cache';
 import UrlMapper from '../url.mapper';
 import { randomIntBetween } from '../../../utils/random';
 import { encode } from '../../../lib/base62';

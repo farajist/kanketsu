@@ -5,7 +5,7 @@ Kanketsu (簡潔: concise; brief; succinct; ​), is a distributed short URL ser
 
 ## Installation 
 
-1. Make sure that you have (Docker)[] installed
+1. Make sure that you have [Docker](https://docs.docker.com/) installed
 2. Clone down this repository.
 ```sh
 git clone https://github.com/farajist/kanketsu.git

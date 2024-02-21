@@ -12,9 +12,10 @@ export interface Env {
   redisPort: number;
   redisDb: number;
 
-  dbUrl: string; 
+  dbHost: string; 
   dbName: string; 
-  dbUser: string 
+  dbUser: string;
+  dbPort: string;
   dbPassword: string;
 
   tokenServerHost: string;
@@ -32,9 +33,10 @@ const env: Env = {
   redisDb: parseInt(process.env.REDIS_DB || '0'),
 
   // mongo
-  dbUrl: process.env.DB_URL || '',
+  dbHost: process.env.DB_HOST || '',
   dbName: process.env.DB_NAME || '',
   dbUser: process.env.DB_USER || '',
+  dbPort: process.env.DB_PORT || '27017',
   dbPassword: process.env.DB_PASSWORD || '',
 
   //zookeeper

@@ -5,9 +5,9 @@ import env from '../env';
 
 export default async function createDatabaseConnection() {
   const {
-    dbUrl, dbName, dbUser, dbPassword,
+    dbHost, dbName, dbUser, dbPassword, dbPort
   } = env;
-  const connectionString = `${dbUrl}/${dbName}`;
+  const connectionString = `mongodb://${dbHost}:${dbPort}/${dbName}?authSource=admin`;
   console.log(`mongoose: creating new connection to the database on ${connectionString}`);
   try {
     await executeAsyncWithRetry(async () => {
