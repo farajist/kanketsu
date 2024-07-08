@@ -1,0 +1,47 @@
+services:
+  kanketsu_cache: 
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: /bin/sh -c "redis-server --save 20 1 --loglevel warning --requirepass $$REDIS_PASSWORD"
+    volumes: 
+      - ./data/cache:/data
+    env_file:
+      - .env
+  kanketsu_db:
+    image: mongo
+    container_name: kanketsu_db
+    ports:
+      - '27017:27017'
+    volumes:
+      - './data/db:/data/db'
+    env_file:
+      - .env
+  zoo:
+    image: zookeeper
+    restart: always
+    hostname: zoo
+    ports:
+      - 2181:2181
+    env_file:
+      - .env
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - kanketsu_api
+    ports:
+      - '4000:80'
+  kanketsu_api:
+    container_name: kanketsu_api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    volumes:
+      - ./api/src:/usr/app/src
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
